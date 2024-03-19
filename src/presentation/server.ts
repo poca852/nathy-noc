@@ -2,15 +2,14 @@ import { MongoLogDatasource } from '../infrastructure/datasources/mongo-log.data
 import { LogRepositoryImpl } from '../infrastructure/repositories/log.repository.impl';
 import { CronService } from './cron/cron-service';
 import { CheckService } from '../domain/use-cases/checks/check-service';
-import { SendWhatsapp } from '../domain/use-cases/send-whatsapp/send-whatsapp';
-import { WsTransporter } from './whatsapp/whatsapp';
+import { EmailService } from './email/email.service';
 
 
 const logRepository = new LogRepositoryImpl(
   new MongoLogDatasource(),
 );
 
-const sendWhatsapp = new SendWhatsapp(new WsTransporter());
+const emailService = new EmailService();
 
 export class Server {
 
@@ -23,7 +22,7 @@ export class Server {
 
         new CheckService(
           logRepository,
-          sendWhatsapp,
+          emailService,
           undefined,
           ( error ) => console.log( error ),
         ).execute( url );
